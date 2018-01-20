@@ -14,6 +14,16 @@ export default options => {
         resetForm: PropTypes.func.isRequired
       };
 
+      static childContextTypes = {
+        form: PropTypes.string
+      };
+
+      getChildContext() {
+        return {
+          form: options.form
+        };
+      }
+
       componentWillMount() {
         this.props.mountForm(options);
       }

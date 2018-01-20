@@ -3,8 +3,10 @@ import PropTypes from 'prop-types';
 import ImmutablePropTypes from 'react-immutable-proptypes';
 import {autobind} from 'core-decorators';
 import {connect} from 'react-redux';
-import {reduxForm} from 'utils/redux-form';
+import {reduxForm, Field, formDataSelector} from 'utils/redux-form';
 import './style.css';
+
+const getFormData = formDataSelector('loginForm');
 
 @reduxForm({
   form: 'loginForm',
@@ -15,7 +17,7 @@ import './style.css';
 })
 @connect(state => {
   return {
-    data: state.form.getIn(['loginForm', 'values'])
+    data: getFormData(state)
   };
 })
 export default class App extends PureComponent {
@@ -41,20 +43,16 @@ export default class App extends PureComponent {
         <div>Form</div>
 
         <div>
-          <input
-            type="text"
-            value={this.props.data.get('login')}
-            onChange={this.handleChange.bind(null, 'login')}
-            placeholder="Login"
+          <Field
+            name="login"
+            component={Login}
           />
         </div>
 
         <div>
-          <input
-            type="password"
-            value={this.props.data.get('password')}
-            onChange={this.handleChange.bind(null, 'password')}
-            placeholder="Password"
+          <Field
+            name="password"
+            component={Password}
           />
         </div>
 
@@ -68,6 +66,52 @@ export default class App extends PureComponent {
           </button>
         </div>
       </div>
+    );
+  }
+}
+
+class Login extends PureComponent {
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
+  };
+
+  @autobind
+  handleChange(e) {
+    this.props.onChange(e.target.value);
+  }
+
+  render() {
+    return (
+      <input
+        type="text"
+        value={this.props.value}
+        onChange={this.handleChange}
+        placeholder="Login"
+      />
+    );
+  }
+}
+
+class Password extends PureComponent {
+  static propTypes = {
+    value: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired
+  };
+
+  @autobind
+  handleChange(e) {
+    this.props.onChange(e.target.value);
+  }
+
+  render() {
+    return (
+      <input
+        type="password"
+        value={this.props.value}
+        onChange={this.handleChange}
+        placeholder="Password"
+      />
     );
   }
 }
